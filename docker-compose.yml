@@ -1,0 +1,38 @@
+version: "3.4"
+
+services:
+  odoo_14:
+    depends_on:
+      - odoo_postgres
+    container_name: odoo_14
+    image: odoo:14
+    ports:
+      - 8069:8069
+    volumes:
+      - ./odoo/web:/var/lib/odoo:rw
+      - ./odoo/addons:/mnt/extra-addons:rw
+    restart: always
+    environment:
+      - HOST=odoo_postgres
+      - USER=odoo
+      - PASSWORD=odoo
+      - DB_NAME=odoo
+    # https://www.odoo.com/documentation/14.0/reference/cmdline.html
+    command: -- # --dev=all --update all --init base
+  odoo_postgres:
+    container_name: odoo_postgres
+    image: postgres:13-alpine
+    restart: always
+    command: ["postgres"]
+    volumes:
+      - ./odoo/db:/var/lib/postgresql/data:rw
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_DB: postgres
+      POSTGRES_USER: odoo
+      POSTGRES_PASSWORD: odoo
+networks:
+  default:
+    external:
+      name: odoo_network

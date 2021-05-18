@@ -1,0 +1,4 @@
+odoo/db
+odoo/web
+odoo/config
+__pycache__
